@@ -1,18 +1,31 @@
 /* DATA*/
-let playerData = JSON.parse(localStorage.getItem("playerData")) || [];
-
-function putThisLocal(){
-    localStorage.setItem("playerList", JSON.stringify(playerList));
+let playerData = [];
+/* Attempt to get and parse playerData from localStorage */
+getPlayerFromLocal()
+async function getPlayerFromLocal(){
+    try {
+        const storedData = localStorage.getItem('playerData');
+        if (storedData) {
+          playerData = JSON.parse(storedData);
+        }
+    } 
+    catch (error) {
+        console.error('Error parsing playerData from localStorage:', error);
+      }
 }
+function putThisLocal(){
+    localStorage.setItem('playerData', JSON.stringify(playerData));
+}
+
 /* Button */
-let startbtn = document.getElementById("");
-let resultbtn = document.getElementById("");
+let startbtn = document.getElementById('startSBbtn');
+let resultbtn = document.getElementById('');
 
 /* RegisterPlayer */
 const playerForm = document.querySelector('.registerPlayer');
-playerForm.addEventListener('submit',handleSubmit());
+playerForm.addEventListener('submit',handleSubmit);
 
-const player = {}; 
+let player = {}; 
 
 function handleSubmit(e){
     e.preventDefault();
@@ -22,26 +35,18 @@ function handleSubmit(e){
     }
     playerData.push(player);
     putThisLocal();
-    renderAll();
-    e.target.thePlayerName.value = "";
+    e.target.name.value = "";
 
 }
 
 /* GetScore */
 getScore()
 async function getScore(){
-    const response = await fetch("info.json");
+    const response = await fetch('info.json');
     const responseData = await response.json();
 
     console.log(responseData);
 } 
 
 /* Display  Player */
-const playerDisplay = document.querySelector(".displayPlay")
-playerDisplay
-
-renderAll();
-function renderAll(){
-    document.querySelector(".displayPlay").innerHTML = "";
-    playerData.forEach(player=>renderMe(player));
-}
+const playerDisplay = document.querySelector('.displayPlay');
