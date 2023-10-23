@@ -1,8 +1,18 @@
 /* DATA*/
 let playerData = [];
+
+/* Delete Player Form DATA */
+function removePlayer(id){
+    let leftOvers = playerData.filter(t=> t.id != id); 
+
+    playerData = [...leftOvers];
+    document.getElementById(id).remove();
+    putThisLocal();
+}
+
 /* Attempt to get and parse playerData from localStorage */
-getPlayerFromLocal()
-async function getPlayerFromLocal(){
+storePlayerLocal()
+async function storePlayerLocal(){
     try {
         const storedData = localStorage.getItem('playerData');
         if (storedData) {
@@ -35,11 +45,12 @@ function handleSubmit(e){
     }
     playerData.push(player);
     putThisLocal();
+    renderRegisteredPlayer();
     e.target.name.value = "";
 
 }
 
-/* GetScore */
+/* GetScore Forn DB (info.json)*/
 getScore()
 async function getScore(){
     const response = await fetch('info.json');
@@ -48,5 +59,31 @@ async function getScore(){
     console.log(responseData);
 } 
 
-/* Display  Player */
-const playerDisplay = document.querySelector('.displayPlay');
+/* Render Player From Register*/
+
+const playerRegisterDisplay = document.querySelector('.displayPlay');
+function renderRegisteredPlayer(){
+    playerRegisterDisplay.innerHTML = '';
+    playerData.forEach(player=>renderRegi(player));
+}
+
+function renderRegi(player){
+    let div = document.createElement("div");
+    div.id = player.id;
+
+    let h2 = document.createElement("h2");
+    h2.innerText = player.name;
+    
+    let delBtn = document.createElement("button");
+    delBtn.addEventListener("click", ()=>removePlayer(player.id));
+    delBtn.innerText = "Remove";
+    
+
+    div.appendChild(h2);
+    div.appendChild(delBtn);
+
+    document.querySelector('.displayPlay').appendChild(div);
+}
+
+
+
