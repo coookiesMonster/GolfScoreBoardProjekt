@@ -6,8 +6,9 @@ function removePlayer(id){
     let leftOvers = playerData.filter(t=> t.id != id); 
 
     playerData = [...leftOvers];
-    document.getElementById(id).remove();
     putThisLocal();
+    document.getElementById(id).remove();
+    return leftOvers;
 }
 
 /* Attempt to get and parse playerData from localStorage */
@@ -39,8 +40,8 @@ let player = {};
 
 function handleSubmit(e){
     e.preventDefault();
-    console.log("Hej");
     player = {
+        id: Date.now(),
         name : e.target.name.value
     }
     playerData.push(player);
@@ -48,6 +49,7 @@ function handleSubmit(e){
     renderRegisteredPlayer();
     e.target.name.value = "";
 
+    console.log("Registered");
 }
 
 /* GetScore Forn DB (info.json)*/
