@@ -44,7 +44,7 @@ function handleSubmit(e){
     else{
         player = {
             id: Date.now(),
-            name : e.target.name.value
+            name : e.target.name.value,
         }
         playerData.push(player);
         putThisLocal();
@@ -81,80 +81,94 @@ function renderRegi(player){
 }
 
 /* GetScore Forn DB (info.json)*/
+let gameON = false
+
 getScore()
 async function getScore(){
     try {
         const response = await fetch('info.json');
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
         const responseData = await response.json();
         renderGameON(responseData.court);
-    } catch (error) {
-        console.error('Error fetching data:', error);
+    } 
+    catch (error) {
+        console.error('error');
     }
 } 
 
 /* Game start Score record */
-document.querySelector('.playerSB').addEventListener('startSBbtn',renderGameON)
-
+/* Flag för att game on ska inte starta innan det aktivera */
+document.querySelector('.playerSB').addEventListener('click',()=>{
+    gameON = true;
+    getScore();
+    console.log("Game status = "+gameON);
+});
 function renderGameON(court){
-    console.log(court)
-    if (Array.isArray(court)) {
-        court.forEach((c) => {
-            console.log(c);         
-
-            let div = document.createElement("div");
-            div.className = "holeDiv";
-            div.id = c.id;
-
-            let info = document.createElement("p");
-            info.className = "courtInfo";
-            info.innerHTML = "info: " + c.info;
-
-            let par = document.createElement("p");
-            par.className = "parInfo";
-            par.innerHTML = "par: " + c.par;
-
-            div.appendChild(info);
-            div.appendChild(par);
-
-            for (let player in playerData) {
-                console.log(player);
-                let input = document.createElement("input");
-                input.type = "number";
-                let i = document.createElement("i");
-                i.innerHTML = player;
-                input.name = player;
-                input.dataset.id = c.id;
-                input.addEventListener("input", (e) => {
-                  const holeId = e.target.dataset.id;
-                  const playerName = e.target.name;
-                  const score = e.target.value;
-                  savescore(playerName, holeId, score);
-                });
-            }
-
-            document.querySelector('.gameOn').appendChild(div);
-        });
-    } 
-
-    else {
-        console.error('can not get court data');
+    console.log(court);
+    if(gameON==true){
+        console.log('renderGameON == ' + gameON);
+        if (Array.isArray(court)) {
+            court.forEach((c) => {
+                console.log(c);         
+    
+                let div = document.createElement("div");
+                div.className = "holeDiv";
+                div.id = c.id;
+    
+                let info = document.createElement("p");
+                info.className = "courtInfo";
+                info.innerHTML = "info: " + c.info;
+    
+                let par = document.createElement("p");
+                par.className = "parInfo";
+                par.innerHTML = "par: " + c.par;
+    
+                div.appendChild(info);
+                div.appendChild(par);
+    
+                for (let player of playerData) {
+                    let input = document.createElement("input");
+                    input.type = "number";
+                    let i = document.createElement("i");
+                    i.innerHTML = player.name;
+                    input.name = player;
+                    input.dataset.id = c.id;
+                    input.addEventListener("input", (e) => {
+                      const holeId = e.target.dataset.id;
+                      const playerName = e.target.name;
+                      const score = e.target.value;
+                      savescore(playerName, holeId, score);
+                    }); 
+                    div.appendChild(i);
+                    div.appendChild(input);
+                }
+    
+                document.querySelector('.gameOn').appendChild(div);
+            });
+        } 
+    
+        else {
+            console.error('can not get court data');
+        }
     }
 }
 
 function savescore(name, holeid, result) {
-    const player = playerData.find(player => player.name === name);
+   
+   
+   
+   /* 
+   1. leta upp rätt spelare i players 
+   2. gå in det objektet och sätt 
+   */
+   
+   
+   
+   
+    const playerSVS = playerData.find(player => player.name === name);
+    console.log(playerData);
 
-    if (player) {
-        if (!player.scores) {
-            player.scores = {};
-        }
-        player.scores[holeid] = result;
+    playerSVS[holleid]=reulst;
 
-        putThisLocal();
-    } else {
-        console.error('Player not found in playerData.');
-    }
+
+
   }
